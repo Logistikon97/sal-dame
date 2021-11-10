@@ -1,49 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <?php
-/*
-AQUÍ SE REGISTRA LA INFROMACIÓN DE USUARIOS NUEVOS.
-SE ACTUALIZA LA TABLA USERS Y SE ENCRIPTA LA CONTRASEÑA
- */
 session_start();
 include('config.php');
 if (isset($_POST['register'])) {
-    //almacena los datos escritos en el formulario
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    //encripta la contraseña y crea un hash
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
-    
-    //verifica si hay algún usuario registrado con ese correo electrónico.
     $query = $connection->prepare("SELECT * FROM users WHERE email=:email");
     $query->bindParam("email", $email, PDO::PARAM_STR);
     $query->execute();
     if ($query->rowCount() > 0) {
-        echo '<div class="alert alert-danger" role="alert">
-        Ya hay un suario registrado con ese correo
-      </div>';
+        echo '<p class="error">The email address is already registered!</p>';
     }
-
-    //si no hay nadie registrado con ese correo, procede a insertar los datos en la tabla
     if ($query->rowCount() == 0) {
-        $query = $connection->prepare("INSERT INTO users(username,password,email) VALUES (:username,:password_hash,:email)");
-        //inserta las variables en la consulta.  PDO::PARAM_STR significa el tipo de dato. en este caso varchar
+        $query = $connection->prepare("INSERT INTO users(username,password,email,logged) VALUES (:username,:password_hash,:email,0)");
         $query->bindParam("username", $username, PDO::PARAM_STR);
         $query->bindParam("password_hash", $password_hash, PDO::PARAM_STR);
         $query->bindParam("email", $email, PDO::PARAM_STR);
         $result = $query->execute();
-        //si se ha ejecutado correctamente lo devuelve a login para que inice sesión
         if ($result) {
-            echo'<p class="success">Your registration was successful!</p>';
-            header("Location: login.php");
+            header("Location:login.php");
+            die();
         } else {
-            echo '<div class="alert alert-danger" role="alert">Ha sucedido un error. Verifica tu información y vuelve a intentarlo</div>';
+            echo '<p class="error">Falso Something went wrong!</p>';
         }
     }
-}
-?>
+}?>
+<!DOCTYPE html>
+<html lang="en">
+
 
 <head>
     <meta charset="UTF-8">

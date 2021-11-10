@@ -1,51 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
-/*
-ESTA ES LA PÁGINA PRINCIPAL. ES DONDE PERMITE AL USUARIO INICIAR SESIÓN O IR A REGISTRARSE.
-*/
     session_start();
     include('config.php');
-    //si le ha dado a iniciar sesión guarda los datos escritos y comprueba en la BD si existen para dar acceso
+
     if (isset($_POST['login'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];
-        //consulta si existe ese usuario
+
         $query = $connection->prepare("SELECT * FROM users WHERE username=:username");
         $query->bindParam("username", $username, PDO::PARAM_STR);
         $query->execute();
         
         $result = $query->fetch(PDO::FETCH_ASSOC);
-        //si no hay ningún resultado singnifica que no hay usuario
+
         if (!$result) {
             echo '<div class="alert alert-danger" role="alert">
-                Usuario no existe
+                Usuario y/o contraseña no coinciden
               </div>';
         } else {
-            //des encripta la contraseña y la comprueba frente a la que se ingresó para dar el acceso
             if (password_verify($password, $result['password'])) {
-                //guarda los datos de sesión para permitir el acceso
                 $_SESSION['user_id'] = $result['id'];
                 $_SESSION['user_name'] = $result['username'];
-                //actualiza el estado de logged a 1
                 $query = $connection->prepare("UPDATE users SET logged =1 WHERE username=:username");
                 $query->bindParam("username", $username, PDO::PARAM_STR);
                 $query->execute();
-                //redirige a index.php
+
                 header('Location: index.php');
+                die();
             } else {
-                //si no coincide la contraseña eentonces 
                 echo '<div class="alert alert-danger" role="alert">
                 Usuario y/o contraseña no coinciden
               </div>';
             }
         }
     }
-    //si le ha dado a registrarse lo redirige a la página indicada
     if (isset($_POST['new'])){
         header('Location: registration.php');
+        die();
     }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
 
 <head>
     <meta charset="UTF-8">
@@ -110,7 +105,7 @@ ESTA ES LA PÁGINA PRINCIPAL. ES DONDE PERMITE AL USUARIO INICIAR SESIÓN O IR A
                         Puedes conocer más sobre Arduino MEGA <a href="www.google.com">aquí</a></p>
                 </div>
                 <div class="col-sm-6 m-auto">
-                    <img style="width: 80%;" class="ms-5 align-content-center" src="resources/arduino.png"
+                    <img style="width: 80%;" class="ms-5 align-content-center" src="https://i.imgur.com/hV6oyk1.png"
                         alt="Arduino MEGA" title="Arduino Mega">
                 </div>
             </div>
@@ -118,7 +113,7 @@ ESTA ES LA PÁGINA PRINCIPAL. ES DONDE PERMITE AL USUARIO INICIAR SESIÓN O IR A
                 <div class="col-sm-6" style="position: relative;">
                     <img src="resources/blob (1).svg" alt="" srcset="" style="position: absolute; z-index: -1; bottom: 5%;">
                     <img src="resources/blob (3).svg" alt="" srcset="" style="position: absolute; width: 50%; z-index: -1;">
-                    <img style="width: 80%;" class="md-5 align-content-center" src="resources/esp8266.png" alt="ESP8266"
+                    <img style="width: 80%;" class="md-5 align-content-center" src="https://i.imgur.com/yNUna0U.png" alt="ESP8266"
                         title="ESP8266">
                 </div>
                 <div class="col-sm-6 m-auto">
@@ -136,9 +131,9 @@ ESTA ES LA PÁGINA PRINCIPAL. ES DONDE PERMITE AL USUARIO INICIAR SESIÓN O IR A
                         Puedes conocer más sobre I2C Y LCD <a href="www.google.com">aquí</a></p>
                 </div>
                 <div class="col-sm-6 m-auto">
-                    <img style="width: 80%;" class="ms-5 align-content-center" src="resources/image (1).png" alt="I2C"
+                    <img style="width: 80%;" class="ms-5 align-content-center" src="https://i.imgur.com/XF5iOtc.png" alt="I2C"
                         title="Módulo I2C">
-                    <img style="width: 80%;" class="ms-5 align-content-center" src="resources/image.png"
+                    <img style="width: 80%;" class="ms-5 align-content-center" src="https://i.imgur.com/gqWfDwA.png"
                         alt="Pantalla LED 16x2" title="Pantalla LED 16x2">
                 </div>
             </div>
@@ -146,7 +141,7 @@ ESTA ES LA PÁGINA PRINCIPAL. ES DONDE PERMITE AL USUARIO INICIAR SESIÓN O IR A
         
         <section class="mb-5">
             <h2 class="text-center m-5">Este es el camino de tu mensaje</h2>
-            <img src="resources/diseno saludame.jpg" alt="" srcset="" style="width: 80%; margin-left: 10%;">
+            <img src="https://i.imgur.com/oBjHrJQ.jpg" alt="" srcset="" style="width: 80%; margin-left: 10%;">
         </section>
         <!--<h2 class="text-center mt-5 mb-2">Entra o regístrate para empezar</h2>
         <div class=" text-center mb-5">
